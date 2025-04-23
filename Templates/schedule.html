@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Daily Schedule</title>
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-top: 0;
+    }
+    .schedule-summary {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+    }
+    .appointment-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    .booked-indicator {
+      background-color: #f6c101;
+    }
+    .open-indicator {
+      background-color: #aaa;
+    }
+    .schedule-item {
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #fafafa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .schedule-item.booked {
+      border-left: 4px solid #f6c101;
+    }
+    .schedule-item.open {
+      border-left: 4px solid #aaa;
+    }
+    .schedule-details {
+      flex: 1;
+    }
+    .action-button {
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+    .book-button {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .book-button:hover {
+      background-color: #388E3C;
+    }
+    .cancel-button {
+      background-color: #F44336;
+      color: white;
+    }
+    .cancel-button:hover {
+      background-color: #D32F2F;
+    }
+    .back-button {
+      display: block;
+      width: 200px;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #e0e0e0;
+      color: #333;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+    }
+    .back-button:hover {
+      background-color: #ccc;
+    }
+    .success-message {
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #E8F5E9;
+      color: #2E7D32;
+      border-radius: 4px;
+      border-left: 4px solid #4CAF50;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Schedule for <span id="selectedDate"></span></h1>
+    
+    <div class="success-message" id="successMessage"></div>
+    
+    <div class="schedule-summary">
+      <span class="appointment-indicator booked-indicator"></span> <span id="bookedCount">{{ appointments.booked }}</span> Booked Appointments
+      &nbsp;&nbsp;&nbsp;
+      <span class="appointment-indicator open-indicator"></span> <span id="openCount">{{ appointments.open }}</span> Open Appointments
+    </div>
+    
+    <div id="scheduleItems">
+      {% if appointments.booked > 0 or appointments.open > 0 %}
+        <!-- Generate example appointments -->
+        {% for i in range(appointments.booked) %}
+          <div class="schedule-item booked" data-time="{{ 9 + i }}:00" data-status="booked" data-id="{{ i }}">
+            <div class="schedule-details">
+              <strong>Booked Appointment</strong><br>
+              Time: {{ 9 + i }}:00 AM<br>
+              Status: Booked
+            </div>
+            <button class="action-button cancel-button" onclick="cancelAppointment(this, '{{ 9 + i }}:00')">Cancel</button>
+          </div>
+        {% endfor %}
+        
+        {% for i in range(appointments.open) %}
+          <div class="schedule-item open" data-time="{{ 1 + i }}:00" data-status="open" data-id="{{ i }}">
+            <div class="schedule-details">
+              <strong>Open Appointment Slot</strong><br>
+              Time: {{ 1 + i }}:00 PM<br>
+              Status: Available
+            </div>
+            <button class="action-button book-button" onclick="bookAppointment(this, '{{ 1 + i }}:00')">Book</button>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="schedule-item">No appointments scheduled for this day</div>
+      {% endif %}
+    </div>
+    
+    <a href="/" class="back-button">Back to Calendar</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the date from the URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const dateParam = urlParams.get('date');
+      
+      if (dateParam) {
+        const date = new Date(dateParam);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('selectedDate').textContent = date.toLocaleDateString('en-US', options);
+      } else {
+        document.getElementById('selectedDate').textContent = 'No date selected';
+      }
+    });
+    
+    function bookAppointment(button, time) {
+      const appointmentItem = button.closest('.schedule-item');
+      const dateParam = new URLSearchParams(window.location.search).get('date');
+      
+      // Send request to book appointment
+      fetch('/api/book-appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          date: dateParam,
+          time: time
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Update UI
+          appointmentItem.classList.remove('open');
+          appointmentItem.classList.add('booked');
+          appointmentItem.setAttribute('data-status', 'booked');
+          
+          // Update the details
+          const detailsDiv = appointmentItem.querySelector('.schedule-details');
+          detailsDiv.innerHTML = `
+            <strong>Booked Appointment</strong><br>
+            Time: ${time} PM<br>
+            Status: Booked
+          `;
+          
+          // Change button to cancel
+          button.textContent = 'Cancel';
+          button.classList.remove('book-button');
+          button.classList.add('cancel-button');
+          button.onclick = function() { cancelAppointment(this, time); };
+          
+          // Update the counts
+          updateCounts(1, -1);
+          
+          // Show success message
+          showSuccessMessage('Appointment booked successfully!');
+        }
+      })
+      .catch(error => {
+        console.error('Error booking appointment:', error);
+      });
+    }
+    
+    function cancelAppointment(button, time) {
+      const appointmentItem = button.closest('.schedule-item');
+      const dateParam = new URLSearchParams(window.location.search).get('date');
+      
+      // Send request to cancel appointment
+      fetch('/api/cancel-appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          date: dateParam,
+          time: time
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Update UI
+          appointmentItem.classList.remove('booked');
+          appointmentItem.classList.add('open');
+          appointmentItem.setAttribute('data-status', 'open');
+          
+          // Update the details
+          const detailsDiv = appointmentItem.querySelector('.schedule-details');
+          
+          // Determine if it's AM or PM based on the time
+          const hourInt = parseInt(time.split(':')[0]);
+          const timeOfDay = hourInt >= 12 ? 'PM' : 'AM';
+          
+          detailsDiv.innerHTML = `
+            <strong>Open Appointment Slot</strong><br>
+            Time: ${time} ${timeOfDay}<br>
+            Status: Available
+          `;
+          
+          // Change button to book
+          button.textContent = 'Book';
+          button.classList.remove('cancel-button');
+          button.classList.add('book-button');
+          button.onclick = function() { bookAppointment(this, time); };
+          
+          // Update the counts
+          updateCounts(-1, 1);
+          
+          // Show success message
+          showSuccessMessage('Appointment cancelled successfully!');
+        }
+      })
+      .catch(error => {
+        console.error('Error cancelling appointment:', error);
+      });
+    }
+    
+    function updateCounts(bookedChange, openChange) {
+      const bookedCount = document.getElementById('bookedCount');
+      const openCount = document.getElementById('openCount');
+      
+      bookedCount.textContent = parseInt(bookedCount.textContent) + bookedChange;
+      openCount.textContent = parseInt(openCount.textContent) + openChange;
+    }
+    
+    function showSuccessMessage(message) {
+      const successMessage = document.getElementById('successMessage');
+      successMessage.textContent = message;
+      successMessage.style.display = 'block';
+      
+      // Hide after 3 seconds
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

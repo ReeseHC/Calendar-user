@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title> Calendar</title>
+</head>
+
+<body>
+    <div class="calendar">
+        <div class="calendar-header">
+          <button onclick="changeMonth(-1)">&lt;</button>
+          <div id="monthYear"></div>
+          <button onclick="changeMonth(1)">&gt;</button>
+        </div>
+        <div class="calendar-days">
+          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+        <div class="calendar-dates" id="calendarDates"></div>
+      </div>
+      <script src="{{ url_for('static', filename='calendar.js') }}"></script>
+</body>
+
+</html>

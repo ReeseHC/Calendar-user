@@ -1,0 +1,119 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+  margin: 0;
+  padding: 20px;
+}
+
+.calendar {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.calendar-header {
+  background-color: #e0e0e0;
+  text-align: center;
+  padding: 15px;
+  font-size: 1.5em;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calendar-header button {
+  background-color: #ccc;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 1em;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.calendar-header button:hover {
+  background-color: #aaa;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #f0f0f0;
+  text-align: center;
+  padding: 10px 0;
+  font-weight: bold;
+  color: #555;
+}
+
+.calendar-dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  padding: 10px;
+  grid-gap: 5px;
+}
+
+.date-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.calendar-dates button {
+  width: 100%;
+  padding: 10px 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+}
+
+.calendar-dates button:hover {
+  background-color: #e6e6e6;
+  border-color: #bbb;
+}
+
+.calendar-dates .empty-day {
+  padding: 10px 0;
+}
+
+.calendar-dates button.today {
+  background-color: #ccc;
+  font-weight: bold;
+  color: #000;
+}
+
+.calendar-dates button.today:hover {
+  background-color: #b8b8b8;
+}
+
+.appointment-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 2px;
+  height: 6px;
+}
+
+.appointment-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.appointment-dot.booked {
+  background-color: #f6c101; /* Yellow for booked appointments */
+}
+
+.appointment-dot.open {
+  background-color: #aaa; /* Gray for open appointments */
+}
