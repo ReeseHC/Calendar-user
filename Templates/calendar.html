@@ -5,10 +5,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title> Calendar</title>
+    <title>{{ app_name }}</title>
+    <style>
+        .app-header {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="app-header">{{ app_name }}</div>
     <div class="calendar">
         <div class="calendar-header">
           <button onclick="changeMonth(-1)">&lt;</button>
