@@ -1,8 +1,6 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
-import json
-from datetime import datetime
+from flask import Blueprint, render_template, request, jsonify
 
-app = Flask(__name__, static_folder='Static')
+bp = Blueprint('calendar_user', __name__)
 
 # App name
 APP_NAME = "Calendar-Schedule App"
@@ -35,11 +33,11 @@ appointment_details = {
     # Other dates would be initialized when first accessed
 }
 
-@app.route("/")
+@bp.route("/calendar")
 def calendar():
-    return render_template("calendar.html", app_name=APP_NAME)
+    return render_template("/calendar_user/calendar.html", app_name=APP_NAME)
 
-@app.route("/schedule.html")
+@bp.route("/calendar/schedule")
 def schedule():
     date = request.args.get('date', '')
     
@@ -66,15 +64,15 @@ def schedule():
     # Get detailed schedule for the date
     date_details = appointment_details.get(date, {})
     
-    return render_template("schedule.html", date=date, appointments=date_data, 
+    return render_template("/calendar_user/schedule.html", date=date, appointments=date_data, 
                          appointment_details=date_details, app_name=APP_NAME)
 
-@app.route("/api/appointments")
+@bp.route("/api/appointments")
 def get_appointments():
     """API endpoint to get appointment data"""
     return jsonify(appointment_data)
 
-@app.route("/api/appointments/<date>")
+@bp.route("/api/appointments/<date>")
 def get_appointment_by_date(date):
     """API endpoint to get appointment data for a specific date"""
     if date in appointment_data:
@@ -82,7 +80,7 @@ def get_appointment_by_date(date):
     else:
         return jsonify({"booked": 0, "open": 0})
 
-@app.route("/api/book-appointment", methods=["POST"])
+@bp.route("/api/book-appointment", methods=["POST"])
 def book_appointment():
     """API endpoint to book an appointment"""
     data = request.json
@@ -120,7 +118,7 @@ def book_appointment():
         
         return jsonify({"success": False, "error": "Appointment not available"}), 400
 
-@app.route("/api/cancel-appointment", methods=["POST"])
+@bp.route("/api/cancel-appointment", methods=["POST"])
 def cancel_appointment():
     """API endpoint to cancel an appointment"""
     data = request.json
@@ -149,14 +147,14 @@ def cancel_appointment():
     else:
         return jsonify({"success": False, "error": "Appointment not found or not booked"}), 400
 
-@app.route("/feedback")
+@bp.route("/calendar/feedback")
 def feedback():
     """Feedback form page"""
     date = request.args.get('date', '')
     time = request.args.get('time', '')
-    return render_template("feedback.html", date=date, time=time, app_name=APP_NAME)
+    return render_template("/calendar_user/feedback.html", date=date, time=time, app_name=APP_NAME)
 
-@app.route("/submit-feedback", methods=["POST"])
+@bp.route("/calendar/submit-feedback", methods=["POST"])
 def submit_feedback():
     """Handle feedback form submission"""
     # In a real app, this would save the feedback to a database
@@ -169,7 +167,4 @@ def submit_feedback():
     }
     
     # Just return success for now
-    return render_template("feedback_success.html", app_name=APP_NAME)
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    return render_template("/calendar_user/feedback_success.html", app_name=APP_NAME)

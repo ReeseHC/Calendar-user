@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Calendar-like Interface</title>
+    <link rel="stylesheet" href="/static/calendar_admin/style.css" />
+  </head>
+  <body>
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <button class="prev-button" aria-label="Previous month">&lt;</button>
+        <span class="month-year" id="monthYear">April 2025</span>
+        <button class="next-button" aria-label="Next month">&gt;</button>
+      </div>
+
+      <div class="calendar-days">
+        <div class="day">Sun</div>
+        <div class="day">Mon</div>
+        <div class="day">Tue</div>
+        <div class="day">Wed</div>
+        <div class="day">Thu</div>
+        <div class="day">Fri</div>
+        <div class="day">Sat</div>
+      </div>
+
+      <div class="calendar-dates" id="calendarDaysContainer">
+        <!-- Dynamic calendar dates will be inserted here by JavaScript -->
+      </div>
+
+      <div class="selected-date-info">
+        <h3 id="selectedDateHeading">Select a date to see events</h3>
+        <div class="events" id="eventsList">
+          <!-- Events for selected date will be displayed here -->
+        </div>
+        <button id="addAppointmentBtn" class="add-appointment-btn">
+          + Add Appointment
+        </button>
+        <div
+          id="appointmentForm"
+          class="appointment-form"
+          style="display: none"
+        >
+          <h4>Add New Appointment</h4>
+          <div class="form-group">
+            <label for="appointmentTime">Time:</label>
+            <input type="time" id="appointmentTime" required />
+          </div>
+          <div class="form-group">
+            <label for="staffId">Staff ID:</label>
+            <input type="number" id="staffId" required />
+          </div>
+          <div class="form-group">
+            <label for="locationId">Location ID:</label>
+            <input type="number" id="locationId" required />
+          </div>
+          <button id="submitAppointmentBtn">Submit Appointment</button>
+          <button id="cancelAppointmentBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/calendar_admin/calendar.js"></script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+</head>
+<body>
+    <h1>Welcome to the Doctor's R Us</h1>
+    <div>
+        <p>Already have an account? Log in here, and make an appointment with us today</p>
+        <button><a href="{{ url_for('auth.login') }}">Log in</a></button>
+    </div>
+    <div>
+        <p>If you dont't, Register here!</p>
+        <button><a href="{{ url_for('auth.register') }}">Register</a></button>
+    </div>
+</body>
+</html>

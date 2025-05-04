@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <title>{{ app_name }} - Feedback Form</title>
+    <style>
+      .container {
+        max-inline-size: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+
+      .app-name {
+        text-align: center;
+        font-size: 1.5em;
+        color: #555;
+        margin-block-end: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-block-start: 0;
+      }
+
+      .form-group {
+        margin-block-end: 20px;
+      }
+
+      label {
+        display: block;
+        margin-block-end: 5px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      input[type="text"],
+      textarea,
+      select {
+        inline-size: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      textarea {
+        resize: vertical;
+        min-block-size: 100px;
+      }
+
+      .rating-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .star-rating {
+        display: flex;
+        gap: 5px;
+      }
+
+      .star {
+        font-size: 24px;
+        cursor: pointer;
+        color: #ddd;
+      }
+
+      .star.active {
+        color: #f6c101;
+      }
+
+      .submit-button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: block;
+        inline-size: 100%;
+        font-weight: bold;
+        transition: background-color 0.2s ease;
+      }
+
+      .submit-button:hover {
+        background-color: #388e3c;
+      }
+
+      .back-link {
+        display: block;
+        text-align: center;
+        margin-block-start: 20px;
+        color: #555;
+        text-decoration: none;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="app-name">{{ app_name }}</div>
+      <h1>Appointment Cancellation Feedback</h1>
+
+      <form action="/calendar/submit-feedback" method="post">
+        <input type="hidden" name="date" value="{{ date }}" />
+        <input type="hidden" name="time" value="{{ time }}" />
+
+        <div class="form-group">
+          <label for="reason">Reason for cancellation:</label>
+          <select id="reason" name="reason" required>
+            <option value="">-- Select a reason --</option>
+            <option value="schedule_conflict">Schedule conflict</option>
+            <option value="illness">Illness or health issues</option>
+            <option value="transportation">Transportation issues</option>
+            <option value="forgot">Forgot about appointment</option>
+            <option value="rescheduling">Need to reschedule</option>
+            <option value="other">Other reason</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="comments">Additional comments:</label>
+          <textarea id="comments" name="comments"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>How would you rate our appointment system?</label>
+          <div class="rating-container">
+            <div class="star-rating" id="starRating">
+              <span class="star" data-value="1">★</span>
+              <span class="star" data-value="2">★</span>
+              <span class="star" data-value="3">★</span>
+              <span class="star" data-value="4">★</span>
+              <span class="star" data-value="5">★</span>
+            </div>
+            <span id="ratingText">0/5</span>
+            <input type="hidden" name="rating" id="ratingInput" value="0" />
+          </div>
+        </div>
+
+        <button type="submit" class="submit-button">Submit Feedback</button>
+      </form>
+
+      <a href="/calendar" class="back-link">Back to Calendar</a>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const stars = document.querySelectorAll(".star");
+        const ratingText = document.getElementById("ratingText");
+        const ratingInput = document.getElementById("ratingInput");
+
+        stars.forEach((star) => {
+          star.addEventListener("click", function () {
+            const value = parseInt(this.getAttribute("data-value"));
+            ratingInput.value = value;
+            ratingText.textContent = `${value}/5`;
+
+            // Update active stars
+            stars.forEach((s) => {
+              if (parseInt(s.getAttribute("data-value")) <= value) {
+                s.classList.add("active");
+              } else {
+                s.classList.remove("active");
+              }
+            });
+          });
+
+          // Add hover effect
+          star.addEventListener("mouseover", function () {
+            const value = parseInt(this.getAttribute("data-value"));
+
+            stars.forEach((s) => {
+              if (parseInt(s.getAttribute("data-value")) <= value) {
+                s.style.color = "#f6c101";
+              }
+            });
+          });
+
+          star.addEventListener("mouseout", function () {
+            // Reset to active state
+            stars.forEach((s) => {
+              s.style.color = "";
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
