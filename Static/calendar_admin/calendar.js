@@ -12,7 +12,7 @@ const appointmentTimeInput = document.getElementById("appointmentTime");
 const staffIdInput = document.getElementById("staffId");
 const locationIdInput = document.getElementById("locationId");
 
-const API_BASE_URL = 'http://localhost:5000'; // Update if your Flask server runs on a different URL
+const API_BASE_URL = 'http://localhost:5000'; // Update if Flask server runs on a different URL
 
 let currentDate = new Date();
 let selectedDate = new Date();
@@ -181,7 +181,7 @@ async function selectDate(dateButton, date) {
 
   // Add selected class to clicked date
   dateButton.classList.add("selected");
-  // Remove today's class if it exists (selected style takes precedence)
+  // Remove today's class if it exists
   dateButton.classList.remove("today");
 
   selectedDate = date;

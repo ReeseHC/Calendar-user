@@ -52,7 +52,7 @@ function renderCalendar(date) {
     }
     btn.textContent = day;
 
-    // Format date for URL and data lookup: YYYY-MM-DD
+   
     const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day + 1).padStart(2, '0')}`;
     btn.onclick = () => {
       window.location.href = `/calendar/schedule?date=${dateString}`;

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>User Login</h1>
+  <form id="login-form">
+    <label for="email">Email</label>
+    <input type="text" id="email" placeholder="Enter your email" required />
+
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter your password" required />
+    <input type="submit" value="Login" />
+    <p>Don't have an account? <a href="/auth/register">Sign up</a></p>
+  </form>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        window.location.href = "/dashboard"; // change to the correct route later
+      } else {
+        alert(data.message);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -46,3 +46,16 @@ def create_app(test_config=None):
 
     
     return app 
+#from flask import Flask
+#from flask_cors import CORS
+#from .config import Config
+
+#def create_app():
+  #  app = Flask(__name__, template_folder='../templates')  # Point to templates folder
+  #  app.config.from_object(Config)
+   # CORS(app)
+    
+ #   from .routes import main
+ #   app.register_blueprint(main)
+    
+ #   return app
